@@ -127,5 +127,8 @@
       }
     }
   },
-  "defaultProject": "autocompleteWithDemo"
+  "defaultProject": "autocompleteWithDemo",
+  "cli": {
+    "analytics": false
+  }
 }
