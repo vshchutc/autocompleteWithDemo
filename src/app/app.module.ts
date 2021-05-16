@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AutocompleteModule } from './autocomplete/autocomplete.module';
 import { AppComponent } from './app.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,8 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    AutocompleteModule
+    AutocompleteModule,
+    NoopAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
