@@ -10,7 +10,6 @@
         <mat-option *ngFor="let option of filteredOptions" [value]="option.id" >
            {{option.label}}
         </mat-option>
-        <mat-option *ngIf="messageOption"
-        >{{messageOption}}</mat-option>
+        <mat-option *ngIf="messageOption">{{messageOption}}</mat-option>
     </mat-autocomplete>
 </div>
