@@ -10,17 +10,26 @@ import { IGitHubResponseUsers, IGitHubResponseRepository } from './interfaces/gi
   providedIn: 'root'
 })
 export class AutocompleteService {
-  private usersMap = {};
-  private repositoryMap = {};
+  private optionsMap: any = {};
 
   constructor(private http: HttpClient ) { }
 
   getFilteredOptions = (query: string): Observable<IAutocompleteOption[]> => {
     return zip(this.getUsers(query), this.getRepositories(query)).pipe(
       map(
-        (value) => this.convertUsersAndRepositoriesToFilterOptions(value)
+        (value) => this.processUsersAndRepoData(value)
       )
     )
+  }
+
+  getOptionDataById = (objId: string) => {
+    const dataById = this.optionsMap[objId];
+
+    if (dataById) {
+      return dataById;
+    } else {
+      throw 'Error. Try to select another option';
+    }
   }
 
   private getUsers = (query: string): Observable<IGithubUser[]> => {
@@ -33,31 +42,40 @@ export class AutocompleteService {
     .pipe(map((repositoriesData) : IGithubRepository[] => repositoriesData.items));
   }
 
-  private convertUsersAndRepositoriesToFilterOptions = (data: any[]) : IAutocompleteOption[] => {
-    let i = 0;
-    let j = 0;
+  private processUsersAndRepoData = (data: any[]) : IAutocompleteOption[] => {
     const [users, repositories] = data;
-    const userOptions = users.map(this.convertUserResponseObjToUserOption);
-    const repositoryOptions = repositories.map(this.convertRepoResponseObjToRepoOption);
+    const userOptions = users.map(this.convertUserResponseObjToOptionAndSaveToMap);
+    const repositoryOptions = repositories.map(this.convertRepoObjToOptionAndSaveToMap);
     const options: IAutocompleteOption[] = userOptions.concat(repositoryOptions);
 
     return options.sort(this.optionsComparator);
   }
 
-  private convertUserResponseObjToUserOption = (userResponceObject: IGithubUser) : IAutocompleteOption => {
-    return {
-      value: userResponceObject.id.toString(),
-      type: 'user',
-      label: userResponceObject.login
-    };
+
+  private convertUserResponseObjToOptionAndSaveToMap = (userResponceObject: IGithubUser) : IAutocompleteOption => {
+    const id = `user-${userResponceObject.id}`;
+    const label =  `User: ${userResponceObject.login}`;
+    const option = {id, label};
+    
+    this.optionsMap[id] = {
+      option,
+      fullData: userResponceObject
+    }
+
+    return option;
   }
 
-  private convertRepoResponseObjToRepoOption = (repositoryResponceObject: IGithubRepository): IAutocompleteOption => {
-    return {
-      value: repositoryResponceObject.id.toString(),
-      type: 'repository',
-      label: repositoryResponceObject.name
-    };
+  private convertRepoObjToOptionAndSaveToMap = (repositoryResponceObject: IGithubRepository): IAutocompleteOption => {
+    const id = `repo-${repositoryResponceObject.id}`;
+    const label = `Repository: ${repositoryResponceObject.name}`;
+    const option = {id, label};
+
+    this.optionsMap[id] = {
+      option,
+      fullData: repositoryResponceObject
+    }
+
+    return option;
   }
 
   private optionsComparator = (option1: IAutocompleteOption, option2: IAutocompleteOption): number  => {
@@ -70,4 +88,5 @@ export class AutocompleteService {
   
     return 0;
   }
+
 }

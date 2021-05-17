@@ -1,5 +1,4 @@
 export interface IAutocompleteOption {
-    value: string;
+    id: string;
     label: string;
-    type: string;
 }

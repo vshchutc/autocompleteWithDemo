@@ -1,3 +1,7 @@
-This is Autocomplete:
-
-<app-autocomplete></app-autocomplete>
+<div>
+    <h3>This is Autocomplete:</h3> 
+    <app-autocomplete (onAutocompleteSelect)="onAutocompleteChange($event)"></app-autocomplete>
+    <p *ngIf="selectionInfo">
+        {{selectionInfo}}
+    </p>
+</div>

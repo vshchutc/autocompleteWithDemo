@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'autocompleteWithDemo';
+  selectionInfo: string = '';
+  objUrl: string = '';
+
+  onAutocompleteChange = ($event:any) => {
+    const {type, selectedOption} = $event;
+    const name = type === 'repo' ? selectedOption.name : selectedOption.login;
+    this.selectionInfo = `The ${type} ${name} was selected.`;
+  }
 }
