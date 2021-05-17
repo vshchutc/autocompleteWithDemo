@@ -7,9 +7,9 @@ interface IGitHubResponse {
 }
 
 export interface IGitHubResponseUsers extends IGitHubResponse {
-    items:IGithubUser[];
+    items: IGithubUser[];
 }
 
 export interface IGitHubResponseRepository extends IGitHubResponse {
-    items:IGithubRepository[];
+    items: IGithubRepository[];
 }

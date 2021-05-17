@@ -19,7 +19,7 @@ export class AutocompleteService {
       map(
         (value) => this.processUsersAndRepoData(value)
       )
-    )
+    );
   }
 
   getOptionDataById = (objId: string) => {
@@ -28,21 +28,21 @@ export class AutocompleteService {
     if (dataById) {
       return dataById;
     } else {
-      throw 'Error. Try to select another option';
+      throw new Error('Error. Try to select another option');
     }
   }
 
   private getUsers = (query: string): Observable<IGithubUser[]> => {
     return this.http.get<IGitHubResponseUsers>(`https://api.github.com/search/users?q=${query}&per_page=50`)
-      .pipe(map( (usersData) : IGithubUser[] => usersData.items));
+      .pipe(map( (usersData): IGithubUser[] => usersData.items));
   }
 
   private getRepositories = (query: string): Observable<IGithubRepository[]> => {
     return this.http.get<IGitHubResponseRepository>(`https://api.github.com/search/repositories?q=${query}&per_page=50`)
-    .pipe(map((repositoriesData) : IGithubRepository[] => repositoriesData.items));
+    .pipe(map((repositoriesData): IGithubRepository[] => repositoriesData.items));
   }
 
-  private processUsersAndRepoData = (data: any[]) : IAutocompleteOption[] => {
+  private processUsersAndRepoData = (data: any[]): IAutocompleteOption[] => {
     const [users, repositories] = data;
     const userOptions = users.map(this.convertUserResponseObjToOptionAndSaveToMap);
     const repositoryOptions = repositories.map(this.convertRepoObjToOptionAndSaveToMap);
@@ -52,15 +52,15 @@ export class AutocompleteService {
   }
 
 
-  private convertUserResponseObjToOptionAndSaveToMap = (userResponceObject: IGithubUser) : IAutocompleteOption => {
+  private convertUserResponseObjToOptionAndSaveToMap = (userResponceObject: IGithubUser): IAutocompleteOption => {
     const id = `user-${userResponceObject.id}`;
     const label =  `User: ${userResponceObject.login}`;
     const option = {id, label};
-    
+
     this.optionsMap[id] = {
       option,
       fullData: userResponceObject
-    }
+    };
 
     return option;
   }
@@ -73,7 +73,7 @@ export class AutocompleteService {
     this.optionsMap[id] = {
       option,
       fullData: repositoryResponceObject
-    }
+    };
 
     return option;
   }
@@ -85,7 +85,7 @@ export class AutocompleteService {
     if (option2.label < option1.label) {
       return 1;
     }
-  
+
     return 0;
   }
 

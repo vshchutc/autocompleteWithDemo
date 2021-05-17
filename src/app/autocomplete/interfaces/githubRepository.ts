@@ -54,7 +54,7 @@ export interface IGithubRepository {
     notifications_url: string;
     open_issues: number;
     open_issues_count: number;
-    owner: IGithubUser,
+    owner: IGithubUser;
     private: boolean;
     pulls_url: string;
     pushed_at: string;

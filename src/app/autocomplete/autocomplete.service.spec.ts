@@ -7,7 +7,7 @@ describe('AutocompleteService', () => {
   let service: AutocompleteService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ 
+    TestBed.configureTestingModule({
       imports: [HttpClientTestingModule]
     });
     service = TestBed.inject(AutocompleteService);

@@ -7,7 +7,7 @@ export interface IGithubUser {
     gravatar_id: string;
     html_url: string;
     id: number;
-    login: string,
+    login: string;
     node_id: string;
     organizations_url: string;
     received_events_url: string;

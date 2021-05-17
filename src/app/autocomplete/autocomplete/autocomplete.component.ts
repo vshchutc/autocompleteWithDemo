@@ -13,15 +13,15 @@ import { debounceTime } from 'rxjs/operators';
   templateUrl: './autocomplete.component.html',
   styleUrls: ['./autocomplete.component.scss']
 })
-export class AutocompleteComponent implements OnInit, OnDestroy { 
-  @Output() onAutocompleteSelect = new EventEmitter<{selectedOption: IGithubUser | IGithubRepository, type: string}>();
+export class AutocompleteComponent implements OnInit, OnDestroy {
+  @Output() autocompleteSelect = new EventEmitter<{selectedOption: IGithubUser | IGithubRepository, type: string}>();
 
   filteredOptions: IAutocompleteOption[] = [];
   searchControl = new FormControl();
-  query: string = '';
-  placeholder: string = 'Enter 3 characters to search';
+  query = '';
+  placeholder = 'Enter 3 characters to search';
   isLoading = false;
-  messageOption: string = '';
+  messageOption = '';
   searchSubscription: Subscription = new Subscription();
   selectedOption: IAutocompleteOption | undefined;
 
@@ -29,25 +29,25 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
   constructor(private autocompleteService: AutocompleteService) { }
 
   ngOnInit(): void {
-    this.searchSubscription = this.searchControl.valueChanges.pipe(debounceTime(400),).subscribe(
+    this.searchSubscription = this.searchControl.valueChanges.pipe(debounceTime(400), ).subscribe(
       this.getFilteredOptions
     );
   }
 
-  onOptionSelected = (event:MatAutocompleteSelectedEvent) => {
+  onOptionSelected = (event: MatAutocompleteSelectedEvent) => {
     const optionId = event.option.value;
 
-    if(optionId){
+    if (optionId){
       const selectedOption = this.autocompleteService.getOptionDataById(optionId);
       const type = optionId.split('-')[0];
-      this.onAutocompleteSelect.emit({selectedOption: selectedOption.fullData, type});
+      this.autocompleteSelect.emit({selectedOption: selectedOption.fullData, type});
       this.selectedOption = selectedOption.option;
     }
   }
 
-  getOptionLabel = (optionId:string) => {
+  getOptionLabel = (optionId: string) => {
     const selectedOption = optionId && this.autocompleteService.getOptionDataById(optionId);
-    if(selectedOption){
+    if (selectedOption){
       return selectedOption.option.label;
     } else {
       return '';
@@ -62,7 +62,7 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
     if (value && value.length >= 3) {
       this.isLoading = true;
       this.messageOption = 'Loading...';
-      this.searchControl.disable({emitEvent:false});
+      this.searchControl.disable({emitEvent: false});
       this.autocompleteService.getFilteredOptions(value).subscribe(this.onFilterOptionsGotten, this.onFilterOptionsGetError);
     } else {
       this.messageOption = 'Minimum query length is equal to 3 symbols.';
@@ -71,9 +71,9 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
 
   private onFilterOptionsGotten = (options: IAutocompleteOption[]) => {
     this.isLoading = false;
-    this.searchControl.enable({emitEvent:false});
+    this.searchControl.enable({emitEvent: false});
 
-    if(!options.length){
+    if (!options.length){
       this.messageOption = 'No options found.';
     } else {
       this.messageOption = '';
@@ -84,9 +84,9 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
   private onFilterOptionsGetError = () => {
     this.messageOption = 'Error occured. Please, try again later.';
     this.isLoading = false;
-    this.searchControl.enable({emitEvent:false});
+    this.searchControl.enable({emitEvent: false});
   }
-    
+
 
   ngOnDestroy = () => {
     this.searchSubscription.unsubscribe();
