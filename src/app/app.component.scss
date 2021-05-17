@@ -1,0 +1,14 @@
+.app-wrapper{
+    margin: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    app-autocomplete {
+        max-width:300px;
+        padding:2rem 0;
+    }
+    p {
+        margin-top: 0.75em;
+    }
+}
