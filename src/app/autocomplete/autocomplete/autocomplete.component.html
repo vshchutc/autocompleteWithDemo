@@ -1,11 +1,13 @@
 <div class="autocomplete-wrapper">
-    <input type="text"
-            placeholder="Pick one"
-            aria-label="Demo Autocomplete"
-            [placeholder]="placeholder"
-            [matAutocomplete]="auto"
-            [formControl]="searchControl"
-            >
+    <input
+        type="text"
+        placeholder="Pick one"
+        aria-label="Demo Autocomplete"
+        [placeholder]="placeholder"
+        [matAutocomplete]="auto"
+        [formControl]="searchControl"
+        #searchInput
+    >
     <mat-autocomplete #auto="matAutocomplete" [autoActiveFirstOption]="true" [displayWith]="getOptionLabel" (optionSelected)="onOptionSelected($event)">
         <mat-option *ngFor="let option of filteredOptions" [value]="option.id" >
            {{option.label}}

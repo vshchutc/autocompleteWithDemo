@@ -1,6 +1,6 @@
 import { IGithubUser } from './../interfaces/githubUser';
 import { AutocompleteService } from './../autocomplete.service';
-import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, Query, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IAutocompleteOption } from '../interfaces/autocompleteOption';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,7 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class AutocompleteComponent implements OnInit, OnDestroy {
   @Output() autocompleteSelect = new EventEmitter<{selectedOption: IGithubUser | IGithubRepository, type: string}>();
+  @ViewChild('searchInput') searchInput: any;
 
   filteredOptions: IAutocompleteOption[] = [];
   searchControl = new FormControl();
@@ -55,18 +56,24 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
   }
 
   private getFilteredOptions = (value: string) => {
-    this.query = value;
-    this.messageOption = '';
-    this.filteredOptions = [];
+    if (value === this.selectedOption?.id) {
+      return ;
+    }
 
     if (value && value.length >= 3) {
-      this.isLoading = true;
-      this.messageOption = 'Loading...';
-      this.searchControl.disable({emitEvent: false});
-      this.autocompleteService.getFilteredOptions(value).subscribe(this.onFilterOptionsGotten, this.onFilterOptionsGetError);
+      this.updateOptions(value);
+      this.query = value;
     } else {
       this.messageOption = 'Minimum query length is equal to 3 symbols.';
     }
+  }
+
+  private updateOptions = (value: string) => {
+    this.filteredOptions = [];
+    this.isLoading = true;
+    this.messageOption = 'Loading...';
+    this.searchControl.disable({emitEvent: false});
+    this.autocompleteService.getFilteredOptions(value).subscribe(this.onFilterOptionsGotten, this.onFilterOptionsGetError);
   }
 
   private onFilterOptionsGotten = (options: IAutocompleteOption[]) => {
@@ -78,6 +85,7 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
     } else {
       this.messageOption = '';
       this.filteredOptions = options;
+      this.searchInput.nativeElement.focus();
     }
   }
 
